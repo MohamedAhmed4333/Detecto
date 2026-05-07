@@ -1,0 +1,20 @@
+# =========================================================================
+# Detecto — Requirements
+# =========================================================================
+# Core dependencies for the Detecto malware analysis platform.
+#
+# Install:  pip install -r requirements.txt
+# =========================================================================
+
+# --- GUI Framework ---
+PyQt5>=5.15.9
+
+# --- PE Parsing ---
+pefile>=2023.2.7
+
+# --- YARA Scanning (optional — scanner degrades gracefully without it) ---
+# Uncomment the line below if you want YARA signature support:
+# yara-python>=4.3.0
+
+# --- Utilities ---
+# hashlib, re, math, logging, os, time — all stdlib, no install needed
