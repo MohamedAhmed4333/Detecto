@@ -15,3 +15,4 @@ pefile>=2023.2.7
 
 # --- Utilities ---
 # hashlib, re, math, logging, os, time — all stdlib, no install needed
+requests>=2.31.0
