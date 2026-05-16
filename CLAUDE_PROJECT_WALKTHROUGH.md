@@ -227,3 +227,19 @@ python example_usage.py <path_to_sample>
 3. VirusTotal is queried inside the static worker after static analysis finishes.
 4. Results UI is dense and mostly centralized in `result_viewer.py`; most rendering/debugging work will happen there.
 5. `main_window.py` includes both splash and upload widget definitions (not split into separate component files yet).
+
+---
+
+## 10) Recent changes (May 2026)
+
+- Fixed Gemini payload mapping in `model/report/gemini_client.py` to use the real keys returned by the static analyzers and dynamic client (fields like `file_info.file_name`, `hashes.sha256`, `threat_assessment.threat_score`, `strings.urls`, `entropy.file_entropy`, etc.). A robust fallback helper and debug prints were added to aid runtime validation.
+- Resolved a race where the Gemini-summary worker could start before dynamic analysis completed: `view/main_window.py` now waits (QTimer-based, configurable wait up to 60s) and only launches the Gemini summary worker after dynamic results arrive or the wait elapses.
+- Added professional PDF export support using ReportLab:
+   - New file: `model/report/pdf_generator.py` implements `generate_pdf(output_path, static_result, dynamic_result, ai_summary)` with a dark-themed multi-section layout (cover, AI executive summary, static findings, dynamic findings).
+   - `requirements.txt` now includes `reportlab`.
+   - `view/components/result_viewer.py` now persists the AI summary text (`self._ai_summary_text`) and calls the new PDF generator when the user clicks Export PDF.
+   - The Export PDF flow previously failed silently; the viewer now shows full tracebacks in the error dialog (and prints them to the terminal) to aid debugging.
+- Compatibility fixes in `pdf_generator.py`: removed an unsupported `TableStyle` command (`ROUNDEDCORNERS`) and eliminated Python 3.9+ subscription-style type hints so the generator is compatible with Python 3.8/reportlab versions.
+- Adjusted runtime import paths in `result_viewer.py` so the PDF generator is imported with the `model.report.pdf_generator` path when the app is run via `python malware_analyzer/main.py`.
+
+If you run into any remaining export issues, check the GUI error dialog's "Show Details" for the full traceback and the terminal output for a printed `[PDF Export Error]` block.
